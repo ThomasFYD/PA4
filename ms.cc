@@ -111,7 +111,7 @@ namespace student
 
         const Eigen::VectorXf normalized = weights / denominator;
 
-        return window.transpose() * normalized;
+        return (normalized.asDiagonal() * window).colwise().sum().transpose();
     }
 
     const ivc::Point mean_shift(const ivc::PointCloud& all_points,
