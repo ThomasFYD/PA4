@@ -109,9 +109,12 @@ namespace student
         if(denominator == 0)
             return center;
 
-        const ivc::Point numerator = window.transpose() * weights;
+        const ivc::PointCloud weighted =
+            (window.array().colwise() * weights.array()).matrix();
 
-        return numerator / denominator;
+        const ivc::Point numerator = weighted.colwise().sum().transpose();
+
+        return (numerator.array() / denominator).matrix();
     }
 
     const ivc::Point mean_shift(const ivc::PointCloud& all_points,
