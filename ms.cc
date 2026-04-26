@@ -70,14 +70,15 @@ namespace student
                                  const ivc::Point& center,
                                  const float_t radius)
     {
+        const Eigen::VectorXf dists =
+            (img.rowwise() - center.transpose()).rowwise().norm();
+
         std::vector<Eigen::Index> keep;
+        keep.reserve(static_cast<size_t>(dists.size()));
 
-        for(Eigen::Index i = 0; i < img.rows(); i++)
+        for(Eigen::Index i = 0; i < dists.size(); i++)
         {
-            const float_t dist =
-                (img.row(i).transpose().eval() - center).norm();
-
-            if(dist <= radius)
+            if(dists(i) <= radius)
             {
                 keep.push_back(i);
             }
