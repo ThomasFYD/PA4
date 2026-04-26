@@ -109,9 +109,9 @@ namespace student
         if(denominator == 0)
             return center;
 
-        const ivc::Point numerator = window.transpose() * weights;
+        const Eigen::VectorXf normalized = weights / denominator;
 
-        return numerator / denominator;
+        return window.transpose() * normalized;
     }
 
     const ivc::Point mean_shift(const ivc::PointCloud& all_points,
