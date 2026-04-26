@@ -70,15 +70,14 @@ namespace student
                                  const ivc::Point& center,
                                  const float_t radius)
     {
-        const Eigen::VectorXf dists =
-            (img.rowwise() - center.transpose()).rowwise().norm();
-
         std::vector<Eigen::Index> keep;
-        keep.reserve(static_cast<size_t>(dists.size()));
 
-        for(Eigen::Index i = 0; i < dists.size(); i++)
+        for(Eigen::Index i = 0; i < img.rows(); i++)
         {
-            if(dists(i) <= radius)
+            const float_t dist =
+                (img.row(i).transpose().eval() - center).norm();
+
+            if(dist <= radius)
             {
                 keep.push_back(i);
             }
@@ -110,12 +109,12 @@ namespace student
         if(denominator == 0)
             return center;
 
-        const ivc::PointCloud weighted =
-            (window.array().colwise() * weights.array()).matrix();
+        const Eigen::VectorXf normalized = weights / denominator;
 
-        const ivc::Point numerator = weighted.colwise().sum().transpose();
+        const Eigen::RowVectorXf result =
+            (window.array().colwise() * normalized.array()).colwise().sum();
 
-        return (numerator.array() / denominator).matrix();
+        return result.transpose();
     }
 
     const ivc::Point mean_shift(const ivc::PointCloud& all_points,
